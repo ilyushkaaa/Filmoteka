@@ -33,3 +33,7 @@ CREATE TABLE IF NOT EXISTS film_actors
     actor_id INT REFERENCES actors (id),
     PRIMARY KEY (film_id, actor_id)
 );
+
+CREATE INDEX IF NOT EXISTS idx_actor_id ON actors (id);
+
+CREATE INDEX IF NOT EXISTS idx_film_id ON films (id);

@@ -116,7 +116,7 @@ func (uh *UserHandler) HandleGetSessionID(w http.ResponseWriter, newUser *entity
 		}
 		return
 	}
-	resp := dto.AuthResponseDTO{
+	resp := dto.AuthResponse{
 		SessionID: sessionID,
 	}
 	sessionIDJSON, err := json.Marshal(&resp)
@@ -136,7 +136,7 @@ func (uh *UserHandler) HandleGetSessionID(w http.ResponseWriter, newUser *entity
 	}
 }
 
-func checkRequestFormat(zapLogger *zap.SugaredLogger, w http.ResponseWriter, r *http.Request) (*dto.AuthRequestDTO, error) {
+func checkRequestFormat(zapLogger *zap.SugaredLogger, w http.ResponseWriter, r *http.Request) (*dto.AuthRequest, error) {
 	rBody, err := io.ReadAll(r.Body)
 	if err != nil {
 		zapLogger.Errorf("error in reading request: %s", err)
@@ -149,7 +149,7 @@ func checkRequestFormat(zapLogger *zap.SugaredLogger, w http.ResponseWriter, r *
 
 		return nil, err
 	}
-	userFromLoginForm := &dto.AuthRequestDTO{}
+	userFromLoginForm := &dto.AuthRequest{}
 	err = json.Unmarshal(rBody, userFromLoginForm)
 	if err != nil {
 		zapLogger.Errorf("error in unmarshalling user: %s", err)
