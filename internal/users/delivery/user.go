@@ -95,7 +95,7 @@ func (uh *UserHandler) Register(w http.ResponseWriter, r *http.Request) {
 	}
 	if err != nil {
 		zapLogger.Errorf("internal error in register: %s", err)
-		errText := fmt.Sprintf(`{"error": "internal error"}`)
+		errText := `{"error": "internal error"}`
 		err = response.WriteResponse(w, []byte(errText), http.StatusInternalServerError)
 		if err != nil {
 			zapLogger.Errorf("can not write response: %s", err)
@@ -109,7 +109,7 @@ func (uh *UserHandler) HandleGetSessionID(w http.ResponseWriter, newUser *entity
 	sessionID, err := uh.sessionUseCase.CreateSession(newUser.ID)
 	if err != nil {
 		zapLogger.Errorf("internal error in getting session id: %s", err)
-		errText := fmt.Sprintf(`{"error": "internal error"}`)
+		errText := `{"error": "internal error"}`
 		err = response.WriteResponse(w, []byte(errText), http.StatusInternalServerError)
 		if err != nil {
 			zapLogger.Errorf("can not write response: %s", err)
@@ -122,7 +122,7 @@ func (uh *UserHandler) HandleGetSessionID(w http.ResponseWriter, newUser *entity
 	sessionIDJSON, err := json.Marshal(&resp)
 	if err != nil {
 		zapLogger.Errorf("error in marshalling session: %s", err)
-		errText := fmt.Sprintf(`{"error": "internal error"}`)
+		errText := `{"error": "internal error"}`
 		err = response.WriteResponse(w, []byte(errText), http.StatusInternalServerError)
 		if err != nil {
 			zapLogger.Errorf("can not write response: %s", err)
@@ -164,7 +164,7 @@ func checkRequestFormat(zapLogger *zap.SugaredLogger, w http.ResponseWriter, r *
 		errorsJSON, err := json.Marshal(validationErrors)
 		if err != nil {
 			zapLogger.Errorf("error in marshalling errors: %s", err)
-			errText := fmt.Sprintf(`{"error": "internal error"}`)
+			errText := `{"error": "internal error"}`
 			err = response.WriteResponse(w, []byte(errText), http.StatusInternalServerError)
 			if err != nil {
 				zapLogger.Errorf("can not write response: %s", err)
@@ -204,7 +204,7 @@ func (uh *UserHandler) Logout(w http.ResponseWriter, r *http.Request) {
 	isDeleted, err := uh.sessionUseCase.DeleteSession(sessionID)
 	if err != nil {
 		zapLogger.Errorf("error in deleting session: %s", err)
-		errText := fmt.Sprintf(`{"error": "internal error"}`)
+		errText := `{"error": "internal error"}`
 		err = response.WriteResponse(w, []byte(errText), http.StatusInternalServerError)
 		if err != nil {
 			zapLogger.Errorf("can not write response: %s", err)

@@ -25,7 +25,8 @@ func AuthMiddleware(su usecaseSession.SessionUseCase, next http.Handler) http.Ha
 		zapLogger, err := logger.GetLoggerFromContext(r.Context())
 		if err != nil {
 			log.Printf("can not get logger from context: %s", err)
-			err = response.WriteResponse(w, []byte("internal error"), http.StatusInternalServerError)
+			errText := `{"error": "internal error"}`
+			err = response.WriteResponse(w, []byte(errText), http.StatusInternalServerError)
 			if err != nil {
 				log.Printf("can not write response: %s", err)
 			}
@@ -33,14 +34,17 @@ func AuthMiddleware(su usecaseSession.SessionUseCase, next http.Handler) http.Ha
 		}
 		sessionCookie, err := r.Cookie("session_id")
 		if errors.Is(err, http.ErrNoCookie) {
-			err = response.WriteResponse(w, []byte("no cookie in request"), http.StatusUnauthorized)
+			zapLogger.Errorf("no cookie in request")
+			errText := `{"error": "no cookie in request""}`
+			err = response.WriteResponse(w, []byte(errText), http.StatusUnauthorized)
 			if err != nil {
 				zapLogger.Errorf("can not write response: %s", err)
 			}
 		}
 		if err != nil {
+			errText := `{"error": "internal error"}`
 			zapLogger.Errorf("error in getting cookie: %s", err)
-			err = response.WriteResponse(w, []byte("internal error"), http.StatusInternalServerError)
+			err = response.WriteResponse(w, []byte(errText), http.StatusInternalServerError)
 			if err != nil {
 				zapLogger.Errorf("can not write response: %s", err)
 			}

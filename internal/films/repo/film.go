@@ -4,17 +4,17 @@ import (
 	"database/sql"
 	"errors"
 
-	entityActor "github.com/ilyushkaaa/Filmoteka/internal/actors/entity"
-	entityFilm "github.com/ilyushkaaa/Filmoteka/internal/films/entity"
+	"github.com/ilyushkaaa/Filmoteka/internal/films/entity"
 	"go.uber.org/zap"
 )
 
 type FilmRepo interface {
-	GetFilms(sortParam string) ([]entityFilm.Film, error)
-	GetFilmByID(filmID uint64) (*entityFilm.Film, error)
-	AddFilm(film entityFilm.Film, actors []entityActor.Actor) (uint64, error)
-	UpdateFilm(film entityFilm.Film, actors []entityActor.Actor) (bool, error)
-	GetFilmsBySearch(searchStr string) ([]entityFilm.Film, error)
+	GetFilms(sortParam string) ([]entity.Film, error)
+	GetFilmByID(filmID uint64) (*entity.Film, error)
+	AddFilm(film entity.Film, actorIDs []uint64) (uint64, error)
+	UpdateFilm(film entity.Film, actorIDs []uint64) (bool, error)
+	GetFilmsBySearch(searchStr string) ([]entity.Film, error)
+	DeleteFilm(ID uint64) (bool, error)
 }
 
 type FilmRepoPG struct {
@@ -29,7 +29,7 @@ func NewFilmRepo(db *sql.DB, zapLogger *zap.SugaredLogger) *FilmRepoPG {
 	}
 }
 
-func (r *FilmRepoPG) GetFilms(sortParam string) ([]entityFilm.Film, error) {
+func (r *FilmRepoPG) GetFilms(sortParam string) ([]entity.Film, error) {
 	if sortParam == "" {
 		sortParam = "rating"
 	}
@@ -47,9 +47,9 @@ func (r *FilmRepoPG) GetFilms(sortParam string) ([]entityFilm.Film, error) {
 			r.zapLogger.Errorf("error in closing query rows: %s", err)
 		}
 	}(rows)
-	films := make([]entityFilm.Film, 0)
+	films := make([]entity.Film, 0)
 	for rows.Next() {
-		film := entityFilm.Film{}
+		film := entity.Film{}
 		err = rows.Scan(&film.ID, &film.Name, &film.Description, &film.DateOfRelease, &film.Rating)
 		if err != nil {
 			return nil, err
@@ -59,8 +59,8 @@ func (r *FilmRepoPG) GetFilms(sortParam string) ([]entityFilm.Film, error) {
 	return films, nil
 }
 
-func (r *FilmRepoPG) GetFilmByID(filmID uint64) (*entityFilm.Film, error) {
-	film := &entityFilm.Film{}
+func (r *FilmRepoPG) GetFilmByID(filmID uint64) (*entity.Film, error) {
+	film := &entity.Film{}
 	err := r.db.
 		QueryRow("SELECT id, name, description, date_of_release, rating FROM films WHERE id = ?", filmID).
 		Scan(&film.ID, &film.Name, &film.Description, &film.DateOfRelease, &film.Rating)
@@ -72,7 +72,7 @@ func (r *FilmRepoPG) GetFilmByID(filmID uint64) (*entityFilm.Film, error) {
 	}
 	return film, nil
 }
-func (r *FilmRepoPG) AddFilm(film entityFilm.Film, actors []entityActor.Actor) (uint64, error) {
+func (r *FilmRepoPG) AddFilm(film entity.Film, actorIDs []uint64) (uint64, error) {
 	tx, err := r.db.Begin()
 	if err != nil {
 		return 0, err
@@ -93,9 +93,9 @@ func (r *FilmRepoPG) AddFilm(film entityFilm.Film, actors []entityActor.Actor) (
 		return 0, err
 	}
 
-	for _, actor := range actors {
+	for _, id := range actorIDs {
 		var actorID uint64
-		err = tx.QueryRow("SELECT id FROM actors WHERE id = $1", actor.ID).Scan(&actorID)
+		err = tx.QueryRow("SELECT id FROM actors WHERE id = $1", id).Scan(&actorID)
 		if err != nil {
 			if errors.Is(err, sql.ErrNoRows) {
 				return 0, nil
@@ -104,7 +104,7 @@ func (r *FilmRepoPG) AddFilm(film entityFilm.Film, actors []entityActor.Actor) (
 		}
 
 		_, err = tx.Exec("INSERT INTO film_actors (film_id, actor_id) VALUES ($1, $2)",
-			lastInsertId, actor.ID)
+			lastInsertId, id)
 		if err != nil {
 			return 0, err
 		}
@@ -116,7 +116,7 @@ func (r *FilmRepoPG) AddFilm(film entityFilm.Film, actors []entityActor.Actor) (
 	}
 	return lastInsertId, nil
 }
-func (r *FilmRepoPG) UpdateFilm(film entityFilm.Film, actors []entityActor.Actor) (bool, error) {
+func (r *FilmRepoPG) UpdateFilm(film entity.Film, actorIDs []uint64) (bool, error) {
 	tx, err := r.db.Begin()
 	if err != nil {
 		return false, err
@@ -144,16 +144,16 @@ func (r *FilmRepoPG) UpdateFilm(film entityFilm.Film, actors []entityActor.Actor
 		return false, err
 	}
 
-	for _, actor := range actors {
+	for _, id := range actorIDs {
 		var actorID uint64
-		err = tx.QueryRow("SELECT id FROM actors WHERE id = $1", actor.ID).Scan(&actorID)
+		err = tx.QueryRow("SELECT id FROM actors WHERE id = $1", id).Scan(&actorID)
 		if err != nil {
 			if errors.Is(err, sql.ErrNoRows) {
 				return false, nil
 			}
 			return false, err
 		}
-		_, err = tx.Exec("INSERT INTO film_actors (film_id, actor_id) VALUES ($1, $2)", film.ID, actor.ID)
+		_, err = tx.Exec("INSERT INTO film_actors (film_id, actor_id) VALUES ($1, $2)", film.ID, id)
 		if err != nil {
 			return false, err
 		}
@@ -166,7 +166,7 @@ func (r *FilmRepoPG) UpdateFilm(film entityFilm.Film, actors []entityActor.Actor
 	return true, nil
 }
 
-func (r *FilmRepoPG) GetFilmsBySearch(searchStr string) ([]entityFilm.Film, error) {
+func (r *FilmRepoPG) GetFilmsBySearch(searchStr string) ([]entity.Film, error) {
 	rows, err := r.db.Query(`
     SELECT DISTINCT f.id, f.name, f.description, f.date_of_release, f.rating
 	FROM films f
@@ -188,9 +188,9 @@ func (r *FilmRepoPG) GetFilmsBySearch(searchStr string) ([]entityFilm.Film, erro
 			r.zapLogger.Errorf("error in closing query rows: %s", err)
 		}
 	}(rows)
-	films := make([]entityFilm.Film, 0)
+	films := make([]entity.Film, 0)
 	for rows.Next() {
-		film := entityFilm.Film{}
+		film := entity.Film{}
 		err = rows.Scan(&film.ID, &film.Name, &film.Description, &film.DateOfRelease, &film.Rating)
 		if err != nil {
 			return nil, err
@@ -198,4 +198,19 @@ func (r *FilmRepoPG) GetFilmsBySearch(searchStr string) ([]entityFilm.Film, erro
 		films = append(films, film)
 	}
 	return films, nil
+}
+
+func (r *FilmRepoPG) DeleteFilm(ID uint64) (bool, error) {
+	result, err := r.db.Exec(
+		"DELETE FROM films WHERE id = $1",
+		ID,
+	)
+	if err != nil {
+		return false, err
+	}
+	num, err := result.RowsAffected()
+	if err != nil {
+		return false, err
+	}
+	return num > 0, nil
 }
