@@ -85,7 +85,6 @@ func (uh *UserHandler) Register(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	newUser, err := uh.userUseCase.Register(userFromLoginForm.Username, userFromLoginForm.Password)
-
 	if errors.Is(err, usecaseUser.ErrUserAlreadyExists) {
 		zapLogger.Errorf("user with username %s alredy exists", userFromLoginForm.Username)
 		err = response.WriteResponse(w, []byte(`{"error": "user already exists"}`), http.StatusUnprocessableEntity)

@@ -6,6 +6,7 @@ import (
 	"github.com/ilyushkaaa/Filmoteka/internal/dto"
 )
 
+//go:generate mockgen -source=actor.go -destination=actor_mock.go -package=usecase ActorUseCase
 type ActorUseCase interface {
 	GetActorByID(actorID uint64) (*dto.ActorWithFilms, error)
 	GetActors() ([]dto.ActorWithFilms, error)

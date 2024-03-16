@@ -5,6 +5,7 @@ import (
 	"github.com/ilyushkaaa/Filmoteka/internal/films/repo"
 )
 
+//go:generate mockgen -source=film.go -destination=film_mock.go -package=usecase FilmUseCase
 type FilmUseCase interface {
 	GetFilms(sortParam string) ([]entity.Film, error)
 	GetFilmByID(filmID uint64) (*entity.Film, error)

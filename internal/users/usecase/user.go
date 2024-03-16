@@ -6,6 +6,7 @@ import (
 	passwordHash "github.com/ilyushkaaa/Filmoteka/pkg/password_hash"
 )
 
+//go:generate mockgen -source=user.go -destination=user_mock.go -package=usecase UserUseCase
 type UserUseCase interface {
 	Login(username, password string) (*entity.User, error)
 	Register(username, password string) (*entity.User, error)
