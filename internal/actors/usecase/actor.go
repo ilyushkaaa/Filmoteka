@@ -7,11 +7,11 @@ import (
 )
 
 type ActorUseCase interface {
-	GetActorByID(actorID int) (*dto.ActorWithFilms, error)
+	GetActorByID(actorID uint64) (*dto.ActorWithFilms, error)
 	GetActors() ([]dto.ActorWithFilms, error)
 	AddActor(actor entity.Actor) (*entity.Actor, error)
-	UpdateActor(actor entity.Actor) (bool, error)
-	DeleteActor(ID uint64) (bool, error)
+	UpdateActor(actor entity.Actor) error
+	DeleteActor(ID uint64) error
 }
 
 type ActorUseCaseApp struct {
@@ -23,7 +23,7 @@ func NewActorUseCaseApp(actorRepo repo.ActorRepo) *ActorUseCaseApp {
 		actorRepo: actorRepo,
 	}
 }
-func (r *ActorUseCaseApp) GetActorByID(actorID int) (*dto.ActorWithFilms, error) {
+func (r *ActorUseCaseApp) GetActorByID(actorID uint64) (*dto.ActorWithFilms, error) {
 	actor, err := r.actorRepo.GetActorByID(actorID)
 	if err != nil {
 		return nil, err
@@ -51,24 +51,24 @@ func (r *ActorUseCaseApp) AddActor(actor entity.Actor) (*entity.Actor, error) {
 	return &actor, nil
 }
 
-func (r *ActorUseCaseApp) UpdateActor(actor entity.Actor) (bool, error) {
+func (r *ActorUseCaseApp) UpdateActor(actor entity.Actor) error {
 	wasUpdated, err := r.actorRepo.UpdateActor(actor)
 	if err != nil {
-		return false, err
+		return err
 	}
 	if !wasUpdated {
-		return false, ErrActorNotFound
+		return ErrActorNotFound
 	}
-	return true, nil
+	return nil
 }
 
-func (r *ActorUseCaseApp) DeleteActor(ID uint64) (bool, error) {
+func (r *ActorUseCaseApp) DeleteActor(ID uint64) error {
 	wasDeleted, err := r.actorRepo.DeleteActor(ID)
 	if err != nil {
-		return false, err
+		return err
 	}
 	if !wasDeleted {
-		return false, ErrActorNotFound
+		return ErrActorNotFound
 	}
-	return true, nil
+	return nil
 }

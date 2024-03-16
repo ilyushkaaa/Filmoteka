@@ -52,7 +52,7 @@ func (h *FilmHandler) GetFilms(w http.ResponseWriter, r *http.Request) {
 	filmsJSON, err := json.Marshal(films)
 	if err != nil {
 		zapLogger.Errorf("error in marshalling films in json: %s", err)
-		errText := fmt.Sprintf(`{"error": ": %s"}`, err)
+		errText := `{"error": "internal server error}`
 		err = response.WriteResponse(w, []byte(errText), http.StatusInternalServerError)
 		if err != nil {
 			return
@@ -368,7 +368,7 @@ func (h *FilmHandler) DeleteFilm(w http.ResponseWriter, r *http.Request) {
 	}
 	if err != nil {
 		errText := `{"error": "internal server error"}`
-		zapLogger.Errorf("error in searching films: %s", err)
+		zapLogger.Errorf("error in deleting film: %s", err)
 		err = response.WriteResponse(w, []byte(errText), http.StatusInternalServerError)
 		if err != nil {
 			zapLogger.Errorf("error in writing response: %s", err)

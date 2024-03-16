@@ -11,7 +11,7 @@ import (
 )
 
 type ActorRepo interface {
-	GetActorByID(actorID int) (*dto.ActorWithFilms, error)
+	GetActorByID(actorID uint64) (*dto.ActorWithFilms, error)
 	GetActors() ([]dto.ActorWithFilms, error)
 	AddActor(actor entityActor.Actor) (uint64, error)
 	UpdateActor(actor entityActor.Actor) (bool, error)
@@ -29,7 +29,7 @@ func NewActorRepoPG(db *sql.DB, zapLogger *zap.SugaredLogger) *ActorRepoPG {
 		zapLogger: zapLogger,
 	}
 }
-func (r *ActorRepoPG) GetActorByID(actorID int) (*dto.ActorWithFilms, error) {
+func (r *ActorRepoPG) GetActorByID(actorID uint64) (*dto.ActorWithFilms, error) {
 	rows, err := r.db.Query(`
         SELECT a.id, a.name, a.surname, a.gender, a.birthday, f.id, f.name, f.description, f.date_of_release, f.rating
         FROM actors a
