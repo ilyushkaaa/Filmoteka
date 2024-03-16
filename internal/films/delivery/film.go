@@ -137,7 +137,7 @@ func (h *FilmHandler) AddFilm(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		zapLogger.Errorf("error in reading request body: %s", err)
 		errText := fmt.Sprintf(`{"error": "error in reading request body: %s"}`, err)
-		err = response.WriteResponse(w, []byte(errText), http.StatusBadRequest)
+		err = response.WriteResponse(w, []byte(errText), http.StatusInternalServerError)
 		if err != nil {
 			zapLogger.Errorf("error in writing response: %s", err)
 		}
@@ -224,7 +224,7 @@ func (h *FilmHandler) UpdateFilm(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		zapLogger.Errorf("error in reading request body: %s", err)
 		errText := fmt.Sprintf(`{"error": "error in reading request body: %s"}`, err)
-		err = response.WriteResponse(w, []byte(errText), http.StatusBadRequest)
+		err = response.WriteResponse(w, []byte(errText), http.StatusInternalServerError)
 		if err != nil {
 			zapLogger.Errorf("error in writing response: %s", err)
 		}

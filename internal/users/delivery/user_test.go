@@ -60,8 +60,8 @@ func TestLogin(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to close response body")
 	}
-	if resp.StatusCode != 401 {
-		t.Errorf("expected status %d, got status %d", http.StatusUnauthorized, resp.StatusCode)
+	if resp.StatusCode != 500 {
+		t.Errorf("expected status %d, got status %d", http.StatusInternalServerError, resp.StatusCode)
 	}
 
 	request = httptest.NewRequest(http.MethodPost, "/login", &errorReader{})
@@ -284,8 +284,8 @@ func TestRegister(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to close response body")
 	}
-	if resp.StatusCode != 401 {
-		t.Errorf("expected status %d, got status %d", http.StatusUnauthorized, resp.StatusCode)
+	if resp.StatusCode != 500 {
+		t.Errorf("expected status %d, got status %d", http.StatusInternalServerError, resp.StatusCode)
 	}
 
 	request = httptest.NewRequest(http.MethodPost, "/register", &errorReader{})
@@ -451,7 +451,7 @@ func TestLogout(t *testing.T) {
 		t.Errorf("expected status %d, got status %d", http.StatusInternalServerError, resp.StatusCode)
 	}
 
-	request = httptest.NewRequest(http.MethodPost, "/register", &errorReader{})
+	request = httptest.NewRequest(http.MethodPost, "/logout", &errorReader{})
 	ctx := request.Context()
 	ctx = context.WithValue(ctx, logger2.MyLoggerKey, logger)
 	respWriter = httptest.NewRecorder()

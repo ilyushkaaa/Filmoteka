@@ -141,7 +141,7 @@ func checkRequestFormat(zapLogger *zap.SugaredLogger, w http.ResponseWriter, r *
 	if err != nil {
 		zapLogger.Errorf("error in reading request: %s", err)
 		errText := fmt.Sprintf(`{"error": "error in reading request body: %s"}`, err)
-		err = response.WriteResponse(w, []byte(errText), http.StatusUnauthorized)
+		err = response.WriteResponse(w, []byte(errText), http.StatusInternalServerError)
 
 		if err != nil {
 			zapLogger.Errorf("can not write response: %s", err)
