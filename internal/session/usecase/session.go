@@ -16,6 +16,12 @@ type SessionUseCaseApp struct {
 	sessionRepo repo.SessionRepo
 }
 
+func NewSessionUseCase(sessionRepo repo.SessionRepo) *SessionUseCaseApp {
+	return &SessionUseCaseApp{
+		sessionRepo: sessionRepo,
+	}
+}
+
 func (su *SessionUseCaseApp) CreateSession(userID uint64) (string, error) {
 	newSession := &entity.Session{
 		ID:     uuid.New().String(),

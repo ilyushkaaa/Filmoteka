@@ -11,7 +11,7 @@ import (
 	"go.uber.org/zap"
 )
 
-func RequestInitMiddleware(next http.Handler) http.Handler {
+func (mw *Middleware) RequestInitMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		myLogger, err := logger.InitLogger()
 		if err != nil {

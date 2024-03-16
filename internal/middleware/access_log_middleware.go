@@ -9,7 +9,7 @@ import (
 	"github.com/ilyushkaaa/Filmoteka/pkg/response"
 )
 
-func AccessLog(next http.Handler) http.Handler {
+func (mw *Middleware) AccessLog(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		zapLogger, err := logger.GetLoggerFromContext(r.Context())
 		if err != nil {

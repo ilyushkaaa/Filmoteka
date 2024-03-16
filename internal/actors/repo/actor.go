@@ -23,7 +23,7 @@ type ActorRepoPG struct {
 	zapLogger *zap.SugaredLogger
 }
 
-func NewActorRepoPG(db *sql.DB, zapLogger *zap.SugaredLogger) *ActorRepoPG {
+func NewActorRepo(db *sql.DB, zapLogger *zap.SugaredLogger) *ActorRepoPG {
 	return &ActorRepoPG{
 		db:        db,
 		zapLogger: zapLogger,

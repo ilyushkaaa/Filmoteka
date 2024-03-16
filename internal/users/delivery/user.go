@@ -9,11 +9,11 @@ import (
 	"net/http"
 
 	"github.com/ilyushkaaa/Filmoteka/internal/dto"
+	"github.com/ilyushkaaa/Filmoteka/internal/middleware"
 	usecaseSession "github.com/ilyushkaaa/Filmoteka/internal/session/usecase"
 	"github.com/ilyushkaaa/Filmoteka/internal/users/entity"
 	usecaseUser "github.com/ilyushkaaa/Filmoteka/internal/users/usecase"
 	"github.com/ilyushkaaa/Filmoteka/pkg/logger"
-	"github.com/ilyushkaaa/Filmoteka/pkg/middleware"
 	"github.com/ilyushkaaa/Filmoteka/pkg/response"
 	"go.uber.org/zap"
 )

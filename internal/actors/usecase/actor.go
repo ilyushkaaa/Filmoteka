@@ -18,7 +18,7 @@ type ActorUseCaseApp struct {
 	actorRepo repo.ActorRepo
 }
 
-func NewActorUseCaseApp(actorRepo repo.ActorRepo) *ActorUseCaseApp {
+func NewActorUseCase(actorRepo repo.ActorRepo) *ActorUseCaseApp {
 	return &ActorUseCaseApp{
 		actorRepo: actorRepo,
 	}

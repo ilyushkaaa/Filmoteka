@@ -10,7 +10,7 @@ import (
 	"github.com/ilyushkaaa/Filmoteka/pkg/response"
 )
 
-func AdminMiddleware(uc usecase.UserUseCase, next http.Handler) http.Handler {
+func (mw *Middleware) AdminMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		ctx := r.Context()
 		zapLogger, err := logger.GetLoggerFromContext(ctx)
@@ -31,7 +31,7 @@ func AdminMiddleware(uc usecase.UserUseCase, next http.Handler) http.Handler {
 			}
 			return
 		}
-		role, err := uc.GetUserRole(userID)
+		role, err := mw.userUseCase.GetUserRole(userID)
 		if errors.Is(err, usecase.ErrNoUser) {
 			zapLogger.Errorf("user with id %d was not found", userID)
 			err = response.WriteResponse(w, []byte(`{"error": "user is not found"}`), http.StatusUnauthorized)

@@ -16,7 +16,7 @@ type SessionRepoRedis struct {
 	expireTime int
 }
 
-func NewSessionRepoRedis(redisConn redis.Conn) *SessionRepoRedis {
+func NewSessionRepo(redisConn redis.Conn) *SessionRepoRedis {
 	return &SessionRepoRedis{
 		redisConn:  redisConn,
 		expireTime: 24 * 60 * 60,

@@ -16,6 +16,12 @@ type UserUseCaseApp struct {
 	userRepo repo.UserRepo
 }
 
+func NewUserUseCase(userRepo repo.UserRepo) *UserUseCaseApp {
+	return &UserUseCaseApp{
+		userRepo: userRepo,
+	}
+}
+
 func (uc *UserUseCaseApp) Login(username, password string) (*entity.User, error) {
 	hashPassword, err := passwordHash.GetHashPassword(password)
 	if err != nil {
