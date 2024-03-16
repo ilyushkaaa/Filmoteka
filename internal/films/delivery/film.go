@@ -175,6 +175,15 @@ func (h *FilmHandler) AddFilm(w http.ResponseWriter, r *http.Request) {
 
 	film, actorIDs := filmDTO.GetFilmAndActorIDs()
 	addedFilm, err := h.filmUseCase.AddFilm(film, actorIDs)
+	if errors.Is(err, usecase.ErrBadFilmAddData) {
+		errText := `{"error": "bad add data"}`
+		zapLogger.Errorf("error in adding film: %s", err)
+		err = response.WriteResponse(w, []byte(errText), http.StatusBadRequest)
+		if err != nil {
+			zapLogger.Errorf("error in writing response: %s", err)
+		}
+		return
+	}
 	if err != nil {
 		errText := `{"error": "internal server error"}`
 		zapLogger.Errorf("error in adding film: %s", err)

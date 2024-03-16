@@ -39,6 +39,7 @@ func (mw *Middleware) AuthMiddleware(next http.Handler) http.Handler {
 			if err != nil {
 				zapLogger.Errorf("can not write response: %s", err)
 			}
+			return
 		}
 		if err != nil {
 			errText := `{"error": "internal error"}`

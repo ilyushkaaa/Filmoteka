@@ -48,6 +48,9 @@ func (r *FilmUseCaseApp) AddFilm(film entity.Film, actorIDs []uint64) (*entity.F
 	if err != nil {
 		return nil, err
 	}
+	if filmID == 0 {
+		return nil, ErrBadFilmAddData
+	}
 	film.ID = filmID
 	return &film, nil
 }

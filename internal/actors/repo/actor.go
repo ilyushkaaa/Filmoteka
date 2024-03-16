@@ -3,6 +3,7 @@ package repo
 import (
 	"database/sql"
 	"errors"
+	"fmt"
 
 	entityActor "github.com/ilyushkaaa/Filmoteka/internal/actors/entity"
 	"github.com/ilyushkaaa/Filmoteka/internal/dto"
@@ -38,9 +39,6 @@ func (r *ActorRepoPG) GetActorByID(actorID uint64) (*dto.ActorWithFilms, error) 
         WHERE a.id = $1
     `, actorID)
 	if err != nil {
-		if errors.Is(err, sql.ErrNoRows) {
-			return nil, nil
-		}
 		return nil, err
 	}
 	defer func(rows *sql.Rows) {
@@ -54,18 +52,23 @@ func (r *ActorRepoPG) GetActorByID(actorID uint64) (*dto.ActorWithFilms, error) 
 	actorWithFilms.Films = make([]entityFilm.Film, 0)
 
 	for rows.Next() {
+		fmt.Println("1111111111111111111")
 		var actor entityActor.Actor
-		var film entityFilm.Film
-		err = rows.Scan(&actor.ID, &actor.Name, &actor.Surname, &actor.Gender, &actor.Birthday, &film.ID, &film.Name,
-			&film.Description, &film.DateOfRelease, &film.Rating)
+		var filmDB dto.FilmDB
+		err = rows.Scan(&actor.ID, &actor.Name, &actor.Surname, &actor.Gender, &actor.Birthday, &filmDB.ID, &filmDB.Name,
+			&filmDB.Description, &filmDB.DateOfRelease, &filmDB.Rating)
 		if err != nil {
 			return nil, err
 		}
 
 		actorWithFilms.Actor = actor
-		if film.Name != "" {
-			actorWithFilms.Films = append(actorWithFilms.Films, film)
+		film := filmDB.GetFilm()
+		if film != nil {
+			actorWithFilms.Films = append(actorWithFilms.Films, *film)
 		}
+	}
+	if actorWithFilms.Actor.Name == "" {
+		return nil, nil
 	}
 
 	return &actorWithFilms, nil
@@ -95,20 +98,23 @@ func (r *ActorRepoPG) GetActors() ([]dto.ActorWithFilms, error) {
 	for rows.Next() {
 		var actorID int
 		var actor entityActor.Actor
-		var film entityFilm.Film
-		err = rows.Scan(&actorID, &actor.Name, &actor.Surname, &actor.Gender, &actor.Birthday, &film.ID, &film.Name,
-			&film.Description, &film.DateOfRelease, &film.Rating)
+		var filmDB dto.FilmDB
+		err = rows.Scan(&actorID, &actor.Name, &actor.Surname, &actor.Gender, &actor.Birthday, &filmDB.ID, &filmDB.Name,
+			&filmDB.Description, &filmDB.DateOfRelease, &filmDB.Rating)
 		if err != nil {
 			return nil, err
 		}
 
+		film := filmDB.GetFilm()
 		if awf, ok := actorsMap[actorID]; ok {
-			awf.Films = append(awf.Films, film)
+			if film != nil {
+				awf.Films = append(awf.Films, *film)
+			}
 			actorsMap[actorID] = awf
 		} else {
 			actorFilms := make([]entityFilm.Film, 0)
-			if film.Name != "" {
-				actorFilms = append(actorFilms, film)
+			if film != nil {
+				actorFilms = append(actorFilms, *film)
 			}
 			actorsMap[actorID] = dto.ActorWithFilms{
 				Actor: actor,

@@ -23,9 +23,10 @@ type UserHandler struct {
 	sessionUseCase usecaseSession.SessionUseCase
 }
 
-func NewUserHandler(userUseCase usecaseUser.UserUseCase) *UserHandler {
+func NewUserHandler(userUseCase usecaseUser.UserUseCase, sessionUseCase usecaseSession.SessionUseCase) *UserHandler {
 	return &UserHandler{
-		userUseCase: userUseCase,
+		userUseCase:    userUseCase,
+		sessionUseCase: sessionUseCase,
 	}
 }
 

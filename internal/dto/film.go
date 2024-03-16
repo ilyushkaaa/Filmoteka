@@ -1,6 +1,7 @@
 package dto
 
 import (
+	"database/sql"
 	"time"
 
 	"github.com/asaskevich/govalidator"
@@ -23,6 +24,13 @@ type (
 		DateOfRelease time.Time `json:"date_of_release" valid:"required"`
 		Rating        float64   `json:"rating" valid:"required,range(0|10)"`
 		ActorIDs      []uint64  `json:"actor_ids"`
+	}
+	FilmDB struct {
+		ID            sql.NullInt64
+		Name          sql.NullString
+		Description   sql.NullString
+		DateOfRelease sql.NullTime
+		Rating        sql.NullFloat64
 	}
 )
 
@@ -63,4 +71,17 @@ func (f *FilmUpdate) GetFilmAndActorIDs() (entity.Film, []uint64) {
 		IDs[i] = f.ActorIDs[i]
 	}
 	return film, IDs
+}
+
+func (f *FilmDB) GetFilm() *entity.Film {
+	if !f.ID.Valid {
+		return nil
+	}
+	return &entity.Film{
+		ID:            uint64(f.ID.Int64),
+		Name:          f.Name.String,
+		Description:   f.Description.String,
+		DateOfRelease: f.DateOfRelease.Time,
+		Rating:        f.Rating.Float64,
+	}
 }

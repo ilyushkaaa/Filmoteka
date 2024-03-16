@@ -76,7 +76,7 @@ func main() {
 
 	ur := userRepo.NewUserRepo(pgxDB)
 	uu := userUseCase.NewUserUseCase(ur)
-	uh := userDelivery.NewUserHandler(uu)
+	uh := userDelivery.NewUserHandler(uu, su)
 
 	fr := filmRepo.NewFilmRepo(pgxDB, logger)
 	fu := filmUseCase.NewFilmUseCase(fr)
@@ -90,8 +90,10 @@ func main() {
 
 	router := mux.NewRouter()
 	adminRouter := mux.NewRouter()
+	authRouter := mux.NewRouter()
 
 	router.PathPrefix("/admin").Handler(adminRouter)
+	router.PathPrefix("/logout").Handler(authRouter)
 
 	router.HandleFunc("/actor/{ACTOR_ID}", ah.GetActorByID).Methods(http.MethodGet)
 	router.HandleFunc("/actors", ah.GetActors).Methods(http.MethodGet)
@@ -103,7 +105,7 @@ func main() {
 
 	router.HandleFunc("/login", uh.Login).Methods(http.MethodPost)
 	router.HandleFunc("/register", uh.Register).Methods(http.MethodPost)
-	router.HandleFunc("/logout", uh.Logout).Methods(http.MethodPost)
+	authRouter.HandleFunc("/logout", uh.Logout).Methods(http.MethodPost)
 
 	adminRouter.HandleFunc("/admin/actor/{ACTOR_ID}", ah.DeleteActor).Methods(http.MethodDelete)
 	adminRouter.HandleFunc("/admin/actor", ah.UpdateActor).Methods(http.MethodPut)
@@ -118,6 +120,8 @@ func main() {
 
 	adminRouter.Use(mw.AuthMiddleware)
 	adminRouter.Use(mw.AdminMiddleware)
+
+	authRouter.Use(mw.AuthMiddleware)
 
 	port := os.Getenv("appPort")
 
