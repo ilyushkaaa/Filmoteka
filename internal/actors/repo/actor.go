@@ -3,7 +3,6 @@ package repo
 import (
 	"database/sql"
 	"errors"
-	"fmt"
 
 	entityActor "github.com/ilyushkaaa/Filmoteka/internal/actors/entity"
 	"github.com/ilyushkaaa/Filmoteka/internal/dto"
@@ -40,6 +39,9 @@ func (r *ActorRepoPG) GetActorByID(actorID uint64) (*dto.ActorWithFilms, error) 
         WHERE a.id = $1
     `, actorID)
 	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return nil, nil
+		}
 		return nil, err
 	}
 	defer func(rows *sql.Rows) {
@@ -53,7 +55,6 @@ func (r *ActorRepoPG) GetActorByID(actorID uint64) (*dto.ActorWithFilms, error) 
 	actorWithFilms.Films = make([]entityFilm.Film, 0)
 
 	for rows.Next() {
-		fmt.Println("1111111111111111111")
 		var actor entityActor.Actor
 		var filmDB dto.FilmDB
 		err = rows.Scan(&actor.ID, &actor.Name, &actor.Surname, &actor.Gender, &actor.Birthday, &filmDB.ID, &filmDB.Name,
