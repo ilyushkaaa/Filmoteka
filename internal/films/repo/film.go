@@ -73,6 +73,7 @@ func (r *FilmRepoPG) GetFilmByID(filmID uint64) (*entity.Film, error) {
 	}
 	return film, nil
 }
+
 func (r *FilmRepoPG) AddFilm(film entity.Film, actorIDs []uint64) (uint64, error) {
 	tx, err := r.db.Begin()
 	if err != nil {
@@ -117,6 +118,7 @@ func (r *FilmRepoPG) AddFilm(film entity.Film, actorIDs []uint64) (uint64, error
 	}
 	return lastInsertId, nil
 }
+
 func (r *FilmRepoPG) UpdateFilm(film entity.Film, actorIDs []uint64) (bool, error) {
 	tx, err := r.db.Begin()
 	if err != nil {
