@@ -135,7 +135,7 @@ func (h *ActorHandler) AddActor(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		zapLogger.Errorf("error in reading request body: %s", err)
 		errText := fmt.Sprintf(`{"error": "error in reading request body: %s"}`, err)
-		err = response.WriteResponse(w, []byte(errText), http.StatusBadRequest)
+		err = response.WriteResponse(w, []byte(errText), http.StatusInternalServerError)
 		if err != nil {
 			zapLogger.Errorf("error in writing response: %s", err)
 		}
@@ -213,7 +213,7 @@ func (h *ActorHandler) UpdateActor(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		zapLogger.Errorf("error in reading request body: %s", err)
 		errText := fmt.Sprintf(`{"error": "error in reading request body: %s"}`, err)
-		err = response.WriteResponse(w, []byte(errText), http.StatusBadRequest)
+		err = response.WriteResponse(w, []byte(errText), http.StatusInternalServerError)
 		if err != nil {
 			zapLogger.Errorf("error in writing response: %s", err)
 		}
