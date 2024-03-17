@@ -11,6 +11,7 @@ import (
 	"go.uber.org/zap"
 )
 
+//go:generate mockgen -source=actor.go -destination=actor_mock.go -package=repo ActorRepo
 type ActorRepo interface {
 	GetActorByID(actorID uint64) (*dto.ActorWithFilms, error)
 	GetActors() ([]dto.ActorWithFilms, error)

@@ -8,6 +8,7 @@ import (
 	"go.uber.org/zap"
 )
 
+//go:generate mockgen -source=film.go -destination=film_mock.go -package=repo FilmRepo
 type FilmRepo interface {
 	GetFilms(sortParam string) ([]entity.Film, error)
 	GetFilmByID(filmID uint64) (*entity.Film, error)

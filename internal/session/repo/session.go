@@ -5,6 +5,7 @@ import (
 	"github.com/ilyushkaaa/Filmoteka/internal/session/entity"
 )
 
+//go:generate mockgen -source=session.go -destination=session_mock.go -package=repo SessionRepo
 type SessionRepo interface {
 	CreateSession(session *entity.Session) error
 	GetSession(sessionID string) (*entity.Session, error)

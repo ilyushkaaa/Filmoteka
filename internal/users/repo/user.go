@@ -7,6 +7,7 @@ import (
 	"github.com/ilyushkaaa/Filmoteka/internal/users/entity"
 )
 
+//go:generate mockgen -source=user.go -destination=user_mock.go -package=repo UserRepo
 type UserRepo interface {
 	Login(username, password string) (*entity.User, error)
 	Register(username, password string) (*entity.User, error)
