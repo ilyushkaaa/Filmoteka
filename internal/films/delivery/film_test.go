@@ -14,6 +14,7 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/ilyushkaaa/Filmoteka/internal/films/entity"
 	"github.com/ilyushkaaa/Filmoteka/internal/films/usecase"
+	"github.com/ilyushkaaa/Filmoteka/internal/films/usecase/mock"
 	logger2 "github.com/ilyushkaaa/Filmoteka/pkg/logger"
 	"go.uber.org/zap"
 )
@@ -41,7 +42,7 @@ func TestGetFilms(t *testing.T) {
 	defer ctrl.Finish()
 	logger := zap.NewNop().Sugar()
 
-	testUseCase := usecase.NewMockFilmUseCase(ctrl)
+	testUseCase := mock.NewMockFilmUseCase(ctrl)
 	testHandler := NewFilmHandler(testUseCase)
 
 	// can not read request body
@@ -147,7 +148,7 @@ func TestGetFilmByID(t *testing.T) {
 	defer ctrl.Finish()
 	logger := zap.NewNop().Sugar()
 
-	testUseCase := usecase.NewMockFilmUseCase(ctrl)
+	testUseCase := mock.NewMockFilmUseCase(ctrl)
 	testHandler := NewFilmHandler(testUseCase)
 
 	// can not read request body
@@ -277,7 +278,7 @@ func TestAddFilm(t *testing.T) {
 	defer ctrl.Finish()
 	logger := zap.NewNop().Sugar()
 
-	testUseCase := usecase.NewMockFilmUseCase(ctrl)
+	testUseCase := mock.NewMockFilmUseCase(ctrl)
 	testHandler := NewFilmHandler(testUseCase)
 
 	request := httptest.NewRequest(http.MethodPost, "/film", &errorReader{})
@@ -449,7 +450,7 @@ func TestUpdateFilm(t *testing.T) {
 	defer ctrl.Finish()
 	logger := zap.NewNop().Sugar()
 
-	testUseCase := usecase.NewMockFilmUseCase(ctrl)
+	testUseCase := mock.NewMockFilmUseCase(ctrl)
 	testHandler := NewFilmHandler(testUseCase)
 
 	request := httptest.NewRequest(http.MethodPut, "/film", &errorReader{})
@@ -620,7 +621,7 @@ func TestGetFilmsBySearch(t *testing.T) {
 	defer ctrl.Finish()
 	logger := zap.NewNop().Sugar()
 
-	testUseCase := usecase.NewMockFilmUseCase(ctrl)
+	testUseCase := mock.NewMockFilmUseCase(ctrl)
 	testHandler := NewFilmHandler(testUseCase)
 
 	request := httptest.NewRequest(http.MethodGet, "/films/search", &errorReader{})
@@ -724,7 +725,7 @@ func TestDeleteFilm(t *testing.T) {
 	defer ctrl.Finish()
 	logger := zap.NewNop().Sugar()
 
-	testUseCase := usecase.NewMockFilmUseCase(ctrl)
+	testUseCase := mock.NewMockFilmUseCase(ctrl)
 	testHandler := NewFilmHandler(testUseCase)
 
 	request := httptest.NewRequest(http.MethodDelete, "/film/1", &errorReader{})

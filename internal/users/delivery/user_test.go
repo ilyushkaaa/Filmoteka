@@ -10,7 +10,7 @@ import (
 	"testing"
 
 	"github.com/golang/mock/gomock"
-	usecase2 "github.com/ilyushkaaa/Filmoteka/internal/session/usecase"
+	usecase2 "github.com/ilyushkaaa/Filmoteka/internal/session/usecase/mock"
 	"github.com/ilyushkaaa/Filmoteka/internal/users/entity"
 	"github.com/ilyushkaaa/Filmoteka/internal/users/usecase"
 	"github.com/ilyushkaaa/Filmoteka/internal/users/usecase/mock"

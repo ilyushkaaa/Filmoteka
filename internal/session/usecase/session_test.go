@@ -63,5 +63,4 @@ func TestDeleteSession(t *testing.T) {
 	wasDeleted, err = testUseCase.DeleteSession("qqqq")
 	assert.Equal(t, nil, err)
 	assert.Equal(t, true, wasDeleted)
-
 }
