@@ -6,7 +6,7 @@ import (
 
 	"github.com/golang/mock/gomock"
 	"github.com/ilyushkaaa/Filmoteka/internal/actors/entity"
-	"github.com/ilyushkaaa/Filmoteka/internal/actors/repo"
+	"github.com/ilyushkaaa/Filmoteka/internal/actors/repo/mock"
 	"github.com/ilyushkaaa/Filmoteka/internal/dto"
 	"github.com/stretchr/testify/assert"
 )
@@ -15,7 +15,7 @@ func TestGetActors(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
-	testRepo := repo.NewMockActorRepo(ctrl)
+	testRepo := mock.NewMockActorRepo(ctrl)
 	testUseCase := NewActorUseCase(testRepo)
 
 	var actorWithFilmsExpected []dto.ActorWithFilms
@@ -38,7 +38,7 @@ func TestGetActorByID(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
-	testRepo := repo.NewMockActorRepo(ctrl)
+	testRepo := mock.NewMockActorRepo(ctrl)
 	testUseCase := NewActorUseCase(testRepo)
 
 	var id uint64 = 1
@@ -67,7 +67,7 @@ func TestAddActor(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
-	testRepo := repo.NewMockActorRepo(ctrl)
+	testRepo := mock.NewMockActorRepo(ctrl)
 	testUseCase := NewActorUseCase(testRepo)
 
 	var id uint64 = 1
@@ -91,7 +91,7 @@ func TestUpdateActor(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
-	testRepo := repo.NewMockActorRepo(ctrl)
+	testRepo := mock.NewMockActorRepo(ctrl)
 	testUseCase := NewActorUseCase(testRepo)
 
 	actorToUpdate := entity.Actor{}

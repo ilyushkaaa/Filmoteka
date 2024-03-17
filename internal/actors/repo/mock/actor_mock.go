@@ -2,7 +2,7 @@
 // Source: actor.go
 
 // Package repo is a generated GoMock package.
-package repo
+package mock
 
 import (
 	reflect "reflect"

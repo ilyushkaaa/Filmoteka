@@ -6,7 +6,7 @@ import (
 
 	"github.com/golang/mock/gomock"
 	"github.com/ilyushkaaa/Filmoteka/internal/films/entity"
-	"github.com/ilyushkaaa/Filmoteka/internal/films/repo"
+	"github.com/ilyushkaaa/Filmoteka/internal/films/repo/mock"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -14,7 +14,7 @@ func TestGetFilms(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
-	testRepo := repo.NewMockFilmRepo(ctrl)
+	testRepo := mock.NewMockFilmRepo(ctrl)
 	testUseCase := NewFilmUseCase(testRepo)
 
 	var filmsExpected []entity.Film
@@ -37,7 +37,7 @@ func TestGetFilmByID(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
-	testRepo := repo.NewMockFilmRepo(ctrl)
+	testRepo := mock.NewMockFilmRepo(ctrl)
 	testUseCase := NewFilmUseCase(testRepo)
 
 	var id uint64 = 1
@@ -71,7 +71,7 @@ func TestAddFilm(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
-	testRepo := repo.NewMockFilmRepo(ctrl)
+	testRepo := mock.NewMockFilmRepo(ctrl)
 	testUseCase := NewFilmUseCase(testRepo)
 
 	var id uint64 = 1
@@ -105,7 +105,7 @@ func TestUpdateFilm(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
-	testRepo := repo.NewMockFilmRepo(ctrl)
+	testRepo := mock.NewMockFilmRepo(ctrl)
 	testUseCase := NewFilmUseCase(testRepo)
 
 	filmToUpdate := entity.Film{}
@@ -131,7 +131,7 @@ func TestDeleteFilm(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
-	testRepo := repo.NewMockFilmRepo(ctrl)
+	testRepo := mock.NewMockFilmRepo(ctrl)
 	testUseCase := NewFilmUseCase(testRepo)
 
 	var id uint64 = 1

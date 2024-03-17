@@ -6,7 +6,7 @@ import (
 
 	"github.com/golang/mock/gomock"
 	"github.com/ilyushkaaa/Filmoteka/internal/users/entity"
-	"github.com/ilyushkaaa/Filmoteka/internal/users/repo"
+	"github.com/ilyushkaaa/Filmoteka/internal/users/repo/mock"
 	"github.com/ilyushkaaa/Filmoteka/pkg/password_hash"
 	"github.com/stretchr/testify/assert"
 )
@@ -21,7 +21,7 @@ func TestLogin(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
-	testRepo := repo.NewMockUserRepo(ctrl)
+	testRepo := mock.NewMockUserRepo(ctrl)
 	testUseCase := NewUserUseCase(testRepo, &password_hash.SHA256Hasher{})
 
 	var userExpected *entity.User
@@ -56,7 +56,7 @@ func TestRegister(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
-	testRepo := repo.NewMockUserRepo(ctrl)
+	testRepo := mock.NewMockUserRepo(ctrl)
 	testUseCase := NewUserUseCase(testRepo, &password_hash.SHA256Hasher{})
 
 	testRepo.EXPECT().GetUserByUsername("aaa").Return(nil, fmt.Errorf("error"))

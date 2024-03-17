@@ -6,7 +6,7 @@ import (
 
 	"github.com/golang/mock/gomock"
 	"github.com/ilyushkaaa/Filmoteka/internal/session/entity"
-	"github.com/ilyushkaaa/Filmoteka/internal/session/repo"
+	"github.com/ilyushkaaa/Filmoteka/internal/session/repo/mock"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -14,7 +14,7 @@ func TestGetSession(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
-	testRepo := repo.NewMockSessionRepo(ctrl)
+	testRepo := mock.NewMockSessionRepo(ctrl)
 	testUseCase := NewSessionUseCase(testRepo)
 
 	var sessionExpected *entity.Session
@@ -43,7 +43,7 @@ func TestDeleteSession(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
-	testRepo := repo.NewMockSessionRepo(ctrl)
+	testRepo := mock.NewMockSessionRepo(ctrl)
 	testUseCase := NewSessionUseCase(testRepo)
 
 	testRepo.EXPECT().DeleteSession("qqqq").
