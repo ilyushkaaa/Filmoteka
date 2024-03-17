@@ -21,6 +21,7 @@ import (
 	userRepo "github.com/ilyushkaaa/Filmoteka/internal/users/repo"
 	userUseCase "github.com/ilyushkaaa/Filmoteka/internal/users/usecase"
 	"github.com/ilyushkaaa/Filmoteka/pkg/dbinit"
+	"github.com/ilyushkaaa/Filmoteka/pkg/password_hash"
 	"go.uber.org/zap"
 )
 
@@ -74,8 +75,9 @@ func main() {
 	sr := sessionRepo.NewSessionRepo(redisConn)
 	su := sessionUseCase.NewSessionUseCase(sr)
 
+	hasher := &password_hash.SHA256Hasher{}
 	ur := userRepo.NewUserRepo(pgxDB)
-	uu := userUseCase.NewUserUseCase(ur)
+	uu := userUseCase.NewUserUseCase(ur, hasher)
 	uh := userDelivery.NewUserHandler(uu, su)
 
 	fr := filmRepo.NewFilmRepo(pgxDB, logger)

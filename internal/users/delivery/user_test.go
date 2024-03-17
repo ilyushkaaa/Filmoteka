@@ -13,6 +13,7 @@ import (
 	usecase2 "github.com/ilyushkaaa/Filmoteka/internal/session/usecase"
 	"github.com/ilyushkaaa/Filmoteka/internal/users/entity"
 	"github.com/ilyushkaaa/Filmoteka/internal/users/usecase"
+	"github.com/ilyushkaaa/Filmoteka/internal/users/usecase/mock"
 	logger2 "github.com/ilyushkaaa/Filmoteka/pkg/logger"
 	"go.uber.org/zap"
 )
@@ -40,7 +41,7 @@ func TestLogin(t *testing.T) {
 	defer ctrl.Finish()
 	logger := zap.NewNop().Sugar()
 
-	testUseCase := usecase.NewMockUserUseCase(ctrl)
+	testUseCase := mock.NewMockUserUseCase(ctrl)
 	sessionTestUseCase := usecase2.NewMockSessionUseCase(ctrl)
 	testHandler := NewUserHandler(testUseCase, sessionTestUseCase)
 
@@ -264,7 +265,7 @@ func TestRegister(t *testing.T) {
 	defer ctrl.Finish()
 	logger := zap.NewNop().Sugar()
 
-	testUseCase := usecase.NewMockUserUseCase(ctrl)
+	testUseCase := mock.NewMockUserUseCase(ctrl)
 	sessionTestUseCase := usecase2.NewMockSessionUseCase(ctrl)
 	testHandler := NewUserHandler(testUseCase, sessionTestUseCase)
 
@@ -411,7 +412,7 @@ func TestLogout(t *testing.T) {
 	defer ctrl.Finish()
 	logger := zap.NewNop().Sugar()
 
-	testUseCase := usecase.NewMockUserUseCase(ctrl)
+	testUseCase := mock.NewMockUserUseCase(ctrl)
 	sessionTestUseCase := usecase2.NewMockSessionUseCase(ctrl)
 	testHandler := NewUserHandler(testUseCase, sessionTestUseCase)
 

@@ -15,16 +15,18 @@ type UserUseCase interface {
 
 type UserUseCaseApp struct {
 	userRepo repo.UserRepo
+	hasher   passwordHash.Hasher
 }
 
-func NewUserUseCase(userRepo repo.UserRepo) *UserUseCaseApp {
+func NewUserUseCase(userRepo repo.UserRepo, hasher passwordHash.Hasher) *UserUseCaseApp {
 	return &UserUseCaseApp{
 		userRepo: userRepo,
+		hasher:   hasher,
 	}
 }
 
 func (uc *UserUseCaseApp) Login(username, password string) (*entity.User, error) {
-	hashPassword, err := passwordHash.GetHashPassword(password)
+	hashPassword, err := uc.hasher.GetHashPassword(password)
 	if err != nil {
 		return nil, err
 	}
@@ -46,7 +48,7 @@ func (uc *UserUseCaseApp) Register(username, password string) (*entity.User, err
 	if loggedInUser != nil {
 		return nil, ErrUserAlreadyExists
 	}
-	hashPassword, err := passwordHash.GetHashPassword(password)
+	hashPassword, err := uc.hasher.GetHashPassword(password)
 	if err != nil {
 		return nil, err
 	}

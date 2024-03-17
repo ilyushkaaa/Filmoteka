@@ -5,7 +5,13 @@ import (
 	"encoding/hex"
 )
 
-func GetHashPassword(password string) (string, error) {
+type Hasher interface {
+	GetHashPassword(password string) (string, error)
+}
+
+type SHA256Hasher struct{}
+
+func (h *SHA256Hasher) GetHashPassword(password string) (string, error) {
 	hash := sha256.New()
 	_, err := hash.Write([]byte(password))
 	if err != nil {
