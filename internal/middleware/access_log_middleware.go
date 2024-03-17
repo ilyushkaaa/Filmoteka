@@ -18,6 +18,7 @@ func (mw *Middleware) AccessLog(next http.Handler) http.Handler {
 			if err != nil {
 				log.Printf("can not write response: %s", err)
 			}
+			return
 		}
 		zapLogger.Infof("access log middleware start")
 		start := time.Now()

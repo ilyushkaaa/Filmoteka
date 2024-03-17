@@ -7,6 +7,7 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/ilyushkaaa/Filmoteka/internal/session/usecase"
 	"github.com/ilyushkaaa/Filmoteka/pkg/logger"
 	"github.com/ilyushkaaa/Filmoteka/pkg/response"
 )
@@ -52,10 +53,19 @@ func (mw *Middleware) AuthMiddleware(next http.Handler) http.Handler {
 		}
 		sessionID := sessionCookie.Value
 		mySession, err := mw.sessionUseCase.GetSession(sessionID)
-		if err != nil {
-			zapLogger.Errorf("error in getting session: %s", err)
+		if errors.Is(err, usecase.ErrNoSession) {
+			zapLogger.Errorf("no session for id: %s", sessionID)
 			errText := fmt.Sprintf(`{"error": "there is no session for session id %s}`, sessionID)
 			err = response.WriteResponse(w, []byte(errText), http.StatusUnauthorized)
+			if err != nil {
+				zapLogger.Errorf("can not write response: %s", err)
+			}
+			return
+		}
+		if err != nil {
+			zapLogger.Errorf("error in getting session: %s", err)
+			errText := `{"error": "internal error"}`
+			err = response.WriteResponse(w, []byte(errText), http.StatusInternalServerError)
 			if err != nil {
 				zapLogger.Errorf("can not write response: %s", err)
 			}

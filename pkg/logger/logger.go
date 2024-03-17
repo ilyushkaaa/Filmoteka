@@ -25,7 +25,7 @@ func InitLogger() (*zap.SugaredLogger, error) {
 func GetLoggerFromContext(ctx context.Context) (*zap.SugaredLogger, error) {
 	myLogger, ok := ctx.Value(MyLoggerKey).(*zap.SugaredLogger)
 	if !ok {
-		return myLogger, fmt.Errorf("no logger in context")
+		return nil, fmt.Errorf("no logger in context")
 	}
 	return myLogger, nil
 }
