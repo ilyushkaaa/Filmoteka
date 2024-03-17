@@ -14,6 +14,7 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/ilyushkaaa/Filmoteka/internal/actors/entity"
 	"github.com/ilyushkaaa/Filmoteka/internal/actors/usecase"
+	"github.com/ilyushkaaa/Filmoteka/internal/actors/usecase/mock"
 	"github.com/ilyushkaaa/Filmoteka/internal/dto"
 	logger2 "github.com/ilyushkaaa/Filmoteka/pkg/logger"
 	"go.uber.org/zap"
@@ -42,7 +43,7 @@ func TestGetActors(t *testing.T) {
 	defer ctrl.Finish()
 	logger := zap.NewNop().Sugar()
 
-	testUseCase := usecase.NewMockActorUseCase(ctrl)
+	testUseCase := mock.NewMockActorUseCase(ctrl)
 	testHandler := NewActorHandler(testUseCase)
 
 	request := httptest.NewRequest(http.MethodGet, "/actors", &errorReader{})
@@ -145,7 +146,7 @@ func TestGetActorByID(t *testing.T) {
 	defer ctrl.Finish()
 	logger := zap.NewNop().Sugar()
 
-	testUseCase := usecase.NewMockActorUseCase(ctrl)
+	testUseCase := mock.NewMockActorUseCase(ctrl)
 	testHandler := NewActorHandler(testUseCase)
 
 	request := httptest.NewRequest(http.MethodGet, "/actor/1", &errorReader{})
@@ -273,7 +274,7 @@ func TestAddActor(t *testing.T) {
 	defer ctrl.Finish()
 	logger := zap.NewNop().Sugar()
 
-	testUseCase := usecase.NewMockActorUseCase(ctrl)
+	testUseCase := mock.NewMockActorUseCase(ctrl)
 	testHandler := NewActorHandler(testUseCase)
 
 	request := httptest.NewRequest(http.MethodPost, "/actor", &errorReader{})
@@ -423,7 +424,7 @@ func TestUpdateActor(t *testing.T) {
 	defer ctrl.Finish()
 	logger := zap.NewNop().Sugar()
 
-	testUseCase := usecase.NewMockActorUseCase(ctrl)
+	testUseCase := mock.NewMockActorUseCase(ctrl)
 	testHandler := NewActorHandler(testUseCase)
 
 	request := httptest.NewRequest(http.MethodPut, "/actor", &errorReader{})
@@ -572,7 +573,7 @@ func TestDeleteActor(t *testing.T) {
 	defer ctrl.Finish()
 	logger := zap.NewNop().Sugar()
 
-	testUseCase := usecase.NewMockActorUseCase(ctrl)
+	testUseCase := mock.NewMockActorUseCase(ctrl)
 	testHandler := NewActorHandler(testUseCase)
 
 	request := httptest.NewRequest(http.MethodDelete, "/actor/1", &errorReader{})
