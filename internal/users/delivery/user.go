@@ -30,6 +30,16 @@ func NewUserHandler(userUseCase usecaseUser.UserUseCase, sessionUseCase usecaseS
 	}
 }
 
+// Login @Summary Вход пользователя
+// @Description Данный метод позволяет пользователям войти в систему, используя свои учетные данные.
+// @Tags users
+// @Accept json
+// @Produce json
+// @Param body body dto.AuthRequest true "Данные пользователя для входа"
+// @Success 200 {object} dto.AuthResponse "Успешный вход, получен идентификатор сессии"
+// @Failure 401 {object} string "Неверные учетные данные"
+// @Failure 500 {object} string "Внутренняя ошибка сервера"
+// @Router /api/v1/login [post]
 func (uh *UserHandler) Login(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	zapLogger, err := logger.GetLoggerFromContext(ctx)
@@ -69,6 +79,16 @@ func (uh *UserHandler) Login(w http.ResponseWriter, r *http.Request) {
 
 }
 
+// Register @Summary Регистрация пользователя
+// @Description Данный метод позволяет новым пользователям зарегистрироваться в системе.
+// @Tags users
+// @Accept json
+// @Produce json
+// @Param body body dto.AuthRequest true "Данные нового пользователя"
+// @Success 200 {object} dto.AuthResponse "Успешная регистрация, получен идентификатор сессии"
+// @Failure 422 {object} string "Пользователь уже существует"
+// @Failure 500 {object} string "Внутренняя ошибка сервера"
+// @Router /api/v1/register [post]
 func (uh *UserHandler) Register(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	zapLogger, err := logger.GetLoggerFromContext(ctx)
@@ -181,6 +201,17 @@ func checkRequestFormat(zapLogger *zap.SugaredLogger, w http.ResponseWriter, r *
 	return userFromLoginForm, nil
 }
 
+// Logout @Summary Выход пользователя
+// @Description Данный метод позволяет пользователям выйти из системы, завершая сеанс.
+// @Tags users
+// @Accept json
+// @Produce json
+// @Security CookieAuth
+// @Success 200 {object} string "Успешный выход"
+// @Failure 401 {object} string "Неверный или отсутствующий токен аутентификации"
+// @Failure 404 {object} string "Сеанс не найден"
+// @Failure 500 {object} string "Внутренняя ошибка сервера"
+// @Router /api/v1/logout [post]
 func (uh *UserHandler) Logout(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	zapLogger, err := logger.GetLoggerFromContext(ctx)

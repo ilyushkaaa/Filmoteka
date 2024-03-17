@@ -10,6 +10,7 @@ import (
 	"strconv"
 
 	"github.com/ilyushkaaa/Filmoteka/internal/dto"
+	_ "github.com/ilyushkaaa/Filmoteka/internal/films/entity"
 	"github.com/ilyushkaaa/Filmoteka/internal/films/usecase"
 	"github.com/ilyushkaaa/Filmoteka/pkg/logger"
 	"github.com/ilyushkaaa/Filmoteka/pkg/response"
@@ -27,6 +28,14 @@ func NewFilmHandler(filmUseCase usecase.FilmUseCase) *FilmHandler {
 	}
 }
 
+// GetFilms @Summary Получить все фильмы
+// @Description Получить список всех фильмов
+// @Tags films
+// @Accept json
+// @Produce json
+// @Success 200 {array} entity.Film
+// @Failure 500 {object} string "Внутренняя ошибка сервера"
+// @Router /api/v1/films [get]
 func (h *FilmHandler) GetFilms(w http.ResponseWriter, r *http.Request) {
 	zapLogger, err := logger.GetLoggerFromContext(r.Context())
 	if err != nil {
@@ -65,6 +74,17 @@ func (h *FilmHandler) GetFilms(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// GetFilmByID @Summary Получить фильм по ID
+// @Description Получить информацию о фильме по его идентификатору
+// @Tags films
+// @Accept json
+// @Produce json
+// @Param FILM_ID path string true "ID актера"
+// @Success 200 {object} entity.Film
+// @Failure 400 {object} string "Идентификатор фильма передан в неверном формате"
+// @Failure 404 {object} string "Фильм не найден"
+// @Failure 500 {object} string "Внутренняя ошибка сервера"
+// @Router /api/v1/film/{FILM_ID} [get]
 func (h *FilmHandler) GetFilmByID(w http.ResponseWriter, r *http.Request) {
 	zapLogger, err := logger.GetLoggerFromContext(r.Context())
 	if err != nil {
@@ -122,6 +142,20 @@ func (h *FilmHandler) GetFilmByID(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// AddFilm @Summary Добавление нового фильма
+// @Description Данный метод позволяет добавить новый фильм в систему.
+// @Tags films
+// @Accept json
+// @Produce json
+// @Security CookieAuth
+// @Param body body entity.Film true "Данные о новом фильме"
+// @Success 200 {object} entity.Film "Данные добавленного фильма"
+// @Failure 400 {object} string "Ошибка в запросе"
+// @Failure 401 {object} string "Пользователь не аутентифицирован"
+// @Failure 403 {object} string "Запрещено для данного пользователя"
+// @Failure 422 {object} string "Ошибка валидации данных"
+// @Failure 500 {object} string "Внутренняя ошибка сервера"
+// @Router /api/v1/admin/film [post]
 func (h *FilmHandler) AddFilm(w http.ResponseWriter, r *http.Request) {
 	zapLogger, err := logger.GetLoggerFromContext(r.Context())
 	if err != nil {
@@ -209,6 +243,20 @@ func (h *FilmHandler) AddFilm(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// UpdateFilm @Summary Обновление информации о фильме
+// @Description Данный метод позволяет обновить информацию о фильме.
+// @Tags films
+// @Accept json
+// @Produce json
+// @Security CookieAuth
+// @Param body body entity.Film true "Данные для обновления фильма"
+// @Success 200 {object} entity.Film "Обновленные данные о фильме"
+// @Failure 400 {object} string "Ошибка в запросе"
+// @Failure 401 {object} string "Пользователь не аутентифицирован"
+// @Failure 403 {object} string "Запрещено для данного пользователя"
+// @Failure 422 {object} string "Ошибка валидации данных"
+// @Failure 500 {object} string "Внутренняя ошибка сервера"
+// @Router /api/v1/admin/film [put]
 func (h *FilmHandler) UpdateFilm(w http.ResponseWriter, r *http.Request) {
 	zapLogger, err := logger.GetLoggerFromContext(r.Context())
 	if err != nil {
@@ -296,6 +344,16 @@ func (h *FilmHandler) UpdateFilm(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// GetFilmsBySearch @Summary Получение списка фильмов по поиску
+// @Description Данный метод позволяет получить список фильмов, соответствующих поисковому запросу.
+// @Tags films
+// @Accept json
+// @Produce json
+// @Param SEARCH_STR path string true "Строка поиска"
+// @Success 200 {array} entity.Film "Список фильмов"
+// @Failure 404 {object} string "Фильмы не найдены"
+// @Failure 500 {object} string "Внутренняя ошибка сервера"
+// @Router /api/v1/films/search/{SEARCH_STR} [get]
 func (h *FilmHandler) GetFilmsBySearch(w http.ResponseWriter, r *http.Request) {
 	zapLogger, err := logger.GetLoggerFromContext(r.Context())
 	if err != nil {
@@ -343,6 +401,20 @@ func (h *FilmHandler) GetFilmsBySearch(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// DeleteFilm @Summary Удаление фильма
+// @Description Данный метод позволяет удалить фильм по его идентификатору.
+// @Tags films
+// @Accept json
+// @Produce json
+// @Security CookieAuth
+// @Param FILM_ID path int true "Идентификатор фильма"
+// @Success 200 {object} string "Успешное удаление"
+// @Failure 400 {object} string "Ошибка в запросе"
+// @Failure 401 {object} string "Пользователь не аутентифицирован"
+// @Failure 403 {object} string "Запрещено для данного пользователя"
+// @Failure 404 {object} string "Фильм не найден"
+// @Failure 500 {object} string "Внутренняя ошибка сервера"
+// @Router /api/v1/admin/film/{FILM_ID} [delete]
 func (h *FilmHandler) DeleteFilm(w http.ResponseWriter, r *http.Request) {
 	zapLogger, err := logger.GetLoggerFromContext(r.Context())
 	if err != nil {

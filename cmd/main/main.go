@@ -8,6 +8,7 @@ import (
 
 	"github.com/gorilla/mux"
 	"github.com/ilyushkaaa/Filmoteka/config"
+	_ "github.com/ilyushkaaa/Filmoteka/docs"
 	actorDelivery "github.com/ilyushkaaa/Filmoteka/internal/actors/delivery"
 	actorRepo "github.com/ilyushkaaa/Filmoteka/internal/actors/repo"
 	actorUseCase "github.com/ilyushkaaa/Filmoteka/internal/actors/usecase"
@@ -22,9 +23,13 @@ import (
 	userUseCase "github.com/ilyushkaaa/Filmoteka/internal/users/usecase"
 	"github.com/ilyushkaaa/Filmoteka/pkg/dbinit"
 	"github.com/ilyushkaaa/Filmoteka/pkg/password_hash"
+	"github.com/swaggo/http-swagger"
 	"go.uber.org/zap"
 )
 
+// @title Фильмотека
+// @description бэкенд приложения “Фильмотека”, который предоставляет REST API для управления базой данных фильмов.
+// @version 1.0
 func main() {
 	zapLogger, err := zap.NewProduction()
 	if err != nil {
@@ -94,28 +99,30 @@ func main() {
 	adminRouter := mux.NewRouter()
 	authRouter := mux.NewRouter()
 
-	router.PathPrefix("/admin").Handler(adminRouter)
-	router.PathPrefix("/logout").Handler(authRouter)
+	router.PathPrefix("/swagger/").Handler(httpSwagger.WrapHandler)
 
-	router.HandleFunc("/actor/{ACTOR_ID}", ah.GetActorByID).Methods(http.MethodGet)
-	router.HandleFunc("/actors", ah.GetActors).Methods(http.MethodGet)
+	router.PathPrefix("/api/v1/admin").Handler(adminRouter)
+	router.PathPrefix("/api/v1/logout").Handler(authRouter)
 
-	router.HandleFunc("/film/{FILM_ID}", fh.GetFilmByID).Methods(http.MethodGet)
-	router.HandleFunc("/film/{FILM_ID}", fh.GetFilmByID).Methods(http.MethodGet)
-	router.HandleFunc("/films", fh.GetFilms).Methods(http.MethodGet)
-	router.HandleFunc("/film/search/{SEARCH_STR}", fh.GetFilmsBySearch).Methods(http.MethodGet)
+	router.HandleFunc("/api/v1/actor/{ACTOR_ID}", ah.GetActorByID).Methods(http.MethodGet)
+	router.HandleFunc("/api/v1/actors", ah.GetActors).Methods(http.MethodGet)
 
-	router.HandleFunc("/login", uh.Login).Methods(http.MethodPost)
-	router.HandleFunc("/register", uh.Register).Methods(http.MethodPost)
-	authRouter.HandleFunc("/logout", uh.Logout).Methods(http.MethodPost)
+	router.HandleFunc("/api/v1/film/{FILM_ID}", fh.GetFilmByID).Methods(http.MethodGet)
+	router.HandleFunc("/api/v1/film/{FILM_ID}", fh.GetFilmByID).Methods(http.MethodGet)
+	router.HandleFunc("/api/v1/films", fh.GetFilms).Methods(http.MethodGet)
+	router.HandleFunc("/api/v1/film/search/{SEARCH_STR}", fh.GetFilmsBySearch).Methods(http.MethodGet)
 
-	adminRouter.HandleFunc("/admin/actor/{ACTOR_ID}", ah.DeleteActor).Methods(http.MethodDelete)
-	adminRouter.HandleFunc("/admin/actor", ah.UpdateActor).Methods(http.MethodPut)
-	adminRouter.HandleFunc("/admin/actor", ah.AddActor).Methods(http.MethodPost)
+	router.HandleFunc("/api/v1/login", uh.Login).Methods(http.MethodPost)
+	router.HandleFunc("/api/v1/register", uh.Register).Methods(http.MethodPost)
+	authRouter.HandleFunc("/api/v1/logout", uh.Logout).Methods(http.MethodPost)
 
-	adminRouter.HandleFunc("/admin/film/{FILM_ID}", fh.DeleteFilm).Methods(http.MethodDelete)
-	adminRouter.HandleFunc("/admin/film", fh.UpdateFilm).Methods(http.MethodPut)
-	adminRouter.HandleFunc("/admin/film", fh.AddFilm).Methods(http.MethodPost)
+	adminRouter.HandleFunc("/api/v1/admin/actor/{ACTOR_ID}", ah.DeleteActor).Methods(http.MethodDelete)
+	adminRouter.HandleFunc("/api/v1/admin/actor", ah.UpdateActor).Methods(http.MethodPut)
+	adminRouter.HandleFunc("/api/v1/admin/actor", ah.AddActor).Methods(http.MethodPost)
+
+	adminRouter.HandleFunc("/api/v1/admin/film/{FILM_ID}", fh.DeleteFilm).Methods(http.MethodDelete)
+	adminRouter.HandleFunc("/api/v1/admin/film", fh.UpdateFilm).Methods(http.MethodPut)
+	adminRouter.HandleFunc("/api/v1/admin/film", fh.AddFilm).Methods(http.MethodPost)
 
 	router.Use(mw.RequestInitMiddleware)
 	router.Use(mw.AccessLog)

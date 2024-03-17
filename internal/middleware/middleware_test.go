@@ -19,7 +19,7 @@ import (
 
 type fakeHandler struct{}
 
-func (h *fakeHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+func (h *fakeHandler) ServeHTTP(w http.ResponseWriter, _ *http.Request) {
 	w.WriteHeader(http.StatusOK)
 }
 
