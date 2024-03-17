@@ -7,7 +7,6 @@ import (
 	"time"
 
 	_ "github.com/jackc/pgx/stdlib"
-	"github.com/joho/godotenv"
 )
 
 const (
@@ -16,17 +15,11 @@ const (
 )
 
 func GetPostgres() (*sql.DB, error) {
-	envFilePath := ".env"
-	err := godotenv.Load(envFilePath)
-	if err != nil {
-		fmt.Println("err")
-	}
 	pass := os.Getenv("pass")
 	user := os.Getenv("user")
 	dbName := os.Getenv("dbName")
 	host := os.Getenv("hostPG")
 	port := os.Getenv("portPG")
-	fmt.Println(port)
 	sslMode := os.Getenv("sslMode")
 	dsn := fmt.Sprintf("user=%s dbname=%s password=%s host=%s port=%s sslmode=%s",
 		user, dbName, pass, host, port, sslMode)

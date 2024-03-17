@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"net/http"
 	"os"
@@ -23,7 +22,7 @@ import (
 	userUseCase "github.com/ilyushkaaa/Filmoteka/internal/users/usecase"
 	"github.com/ilyushkaaa/Filmoteka/pkg/dbinit"
 	"github.com/ilyushkaaa/Filmoteka/pkg/password_hash"
-	"github.com/swaggo/http-swagger"
+	httpSwagger "github.com/swaggo/http-swagger"
 	"go.uber.org/zap"
 )
 
@@ -51,8 +50,6 @@ func main() {
 	}
 
 	pgxDB, err := dbinit.GetPostgres()
-	fmt.Println("eeee")
-
 	if err != nil {
 		logger.Errorf("error in connection to postgres: %s", err)
 		return
@@ -95,11 +92,13 @@ func main() {
 
 	mw := middleware.NewMiddleware(su, uu)
 
+	mainRouter := mux.NewRouter()
 	router := mux.NewRouter()
 	adminRouter := mux.NewRouter()
 	authRouter := mux.NewRouter()
 
-	router.PathPrefix("/swagger/").Handler(httpSwagger.WrapHandler)
+	mainRouter.PathPrefix("/api/v1").Handler(router)
+	mainRouter.PathPrefix("/swagger/").Handler(httpSwagger.WrapHandler)
 
 	router.PathPrefix("/api/v1/admin").Handler(adminRouter)
 	router.PathPrefix("/api/v1/logout").Handler(authRouter)
@@ -138,7 +137,7 @@ func main() {
 		"type", "START",
 		"addr", port,
 	)
-	err = http.ListenAndServe(port, router)
+	err = http.ListenAndServe(port, mainRouter)
 	if err != nil {
 		logger.Fatalf("errror in server start")
 	}
