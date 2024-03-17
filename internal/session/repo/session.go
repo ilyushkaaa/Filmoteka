@@ -37,9 +37,6 @@ func (s *SessionRepoRedis) GetSession(sessionID string) (*entity.Session, error)
 	if err != nil {
 		return nil, err
 	}
-	if err != nil {
-		return nil, err
-	}
 	session := &entity.Session{
 		ID:     sessionID,
 		UserID: userID,
