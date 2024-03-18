@@ -424,6 +424,10 @@ paths:
             items:
               $ref: '#/definitions/github_com_ilyushkaaa_Filmoteka_internal_films_entity.Film'
             type: array
+        "400":
+          description: Передан неверный параметр сортировки
+          schema:
+            type: string
         "500":
           description: Внутренняя ошибка сервера
           schema:

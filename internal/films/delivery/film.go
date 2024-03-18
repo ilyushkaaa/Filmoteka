@@ -34,6 +34,7 @@ func NewFilmHandler(filmUseCase usecase.FilmUseCase) *FilmHandler {
 // @Accept json
 // @Produce json
 // @Success 200 {array} entity.Film
+// @Failure 400 {object} string "Передан неверный параметр сортировки"
 // @Failure 500 {object} string "Внутренняя ошибка сервера"
 // @Router /api/v1/films [get]
 func (h *FilmHandler) GetFilms(w http.ResponseWriter, r *http.Request) {
@@ -48,6 +49,15 @@ func (h *FilmHandler) GetFilms(w http.ResponseWriter, r *http.Request) {
 	}
 	query := r.URL.Query()
 	sortParam := query.Get("sort_param")
+	if sortParam != "" && sortParam != "rating" && sortParam != "birthday" && sortParam != "name" {
+		zapLogger.Errorf("vad sorting param passed: %s", sortParam)
+		errText := fmt.Sprintf(`{"error": %s can not be sorting param"}`, sortParam)
+		err = response.WriteResponse(w, []byte(errText), http.StatusBadRequest)
+		if err != nil {
+			return
+		}
+		return
+	}
 	films, err := h.filmUseCase.GetFilms(sortParam)
 	if err != nil {
 		zapLogger.Errorf("error in getting films: %s", err)

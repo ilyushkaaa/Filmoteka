@@ -551,6 +551,12 @@ const docTemplate = `{
                             }
                         }
                     },
+                    "400": {
+                        "description": "Передан неверный параметр сортировки",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
                     "500": {
                         "description": "Внутренняя ошибка сервера",
                         "schema": {
