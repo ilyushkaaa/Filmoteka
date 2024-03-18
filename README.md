@@ -27,9 +27,17 @@
 
 1. Склонируйте репозиторий:
 
+    Для https:
+
     ```bash
     git clone https://github.com/ilyushkaaa/Filmoteka.git
     ```
+   Для ssh:
+
+   ```bash
+    git clone git@github.com:ilyushkaaa/Filmoteka.git
+    ```
+
 
 2. Перейдите в каталог проекта:
 
